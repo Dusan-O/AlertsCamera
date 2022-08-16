@@ -22,13 +22,16 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setupLibrary()
+        setupCamera()
     }
 
 
     @IBAction func editingPressed(_ sender: Any) {
+        alertForEditing()
     }
     @IBAction func takeAPicPressed(_ sender: Any) {
+        alertForPicture()
     }
     
     
@@ -81,4 +84,40 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
+}
+
+extension ViewController {
+    
+    func alertForPicture() {
+        let alert = UIAlertController(title: "Prendre une photo", message: "Quel type de photo?", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Annuler", style: .cancel, handler: nil)
+        alert.addAction(cancel)
+        if self.canUserCamera {
+            self.setupCamera()
+            let photo = UIAlertAction(title: "Appareil photo", style: .default) { action in
+                self.present(self.cameraPicker, animated: true, completion: nil)
+        }
+            alert.addAction(photo)
+        }
+        let library = UIAlertAction(title: "Librairie", style: .default) { action in
+            self.present(self.libraryPicker!, animated: true, completion: nil)
+        }
+        alert.addAction(library)
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func alertForEditing() {
+        let alert = UIAlertController(title: "Editing?", message: nil, preferredStyle: .actionSheet)
+        let noEditing = UIAlertAction(title: "Original", style: .default) { action in
+            self.canEdit = false
+        }
+        let yesEditing = UIAlertAction(title: "Editable", style: .default) { action in
+            self.canEdit = true
+        }
+        alert.addAction(noEditing)
+        alert.addAction(yesEditing)
+        alert.addAction(UIAlertAction(title: "Annuler", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
